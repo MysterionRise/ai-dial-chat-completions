@@ -26,7 +26,7 @@ class DialClient(BaseClient):
         # 1. Create chat completions with client
         converted_messages = [msg.to_dict() for msg in messages]
         response = self._client.chat.completions.create(
-            model=self._deployment_name,
+            deployment_name=self._deployment_name,
             messages=converted_messages
         )
 
@@ -47,16 +47,18 @@ class DialClient(BaseClient):
         contents = []
 
         # 3. Make async loop from chunks
-        with self._async_client.chat.completions.stream(
-            model=self._deployment_name,
-            messages=converted_messages
-        ) as stream:
-            async for chunk in stream:
-                # 4. Print content chunk and collect it in contents array
-                if chunk.choices and chunk.choices[0].delta and chunk.choices[0].delta.content:
-                    content_part = chunk.choices[0].delta.content
-                    print(content_part, end="", flush=True)
-                    contents.append(content_part)
+        response = await self._async_client.chat.completions.create(
+            deployment_name=self._deployment_name,
+            messages=converted_messages,
+            stream=True
+        )
+
+        async for chunk in response:
+            # 4. Print content chunk and collect it in contents array
+            if chunk.choices and chunk.choices[0].delta and chunk.choices[0].delta.content:
+                content_part = chunk.choices[0].delta.content
+                print(content_part, end="", flush=True)
+                contents.append(content_part)
 
         # 5. Print empty row (end of streaming)
         print()
