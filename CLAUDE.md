@@ -10,9 +10,11 @@ This is a Python CLI application for building a chat interface that integrates w
 
 ### Environment Setup
 
+**Python version requirement: 3.11 or 3.12** (The aidial-client library has compatibility issues with Python 3.14+)
+
 ```bash
-# Create virtual environment
-python -m venv .venv
+# Create virtual environment with Python 3.12
+python3.12 -m venv .venv
 
 # Activate virtual environment (macOS/Linux)
 source .venv/bin/activate
@@ -33,7 +35,14 @@ python -m task.app --stream true
 
 ### Configuration
 
-Set the DIAL API key as an environment variable:
+The application loads the DIAL API key from a `.env` file in the project root using `python-dotenv`. Create a `.env` file:
+
+```bash
+# .env
+DIAL_API_KEY="your_api_key_here"
+```
+
+Alternatively, set as an environment variable:
 
 ```bash
 export DIAL_API_KEY="your_api_key_here"
